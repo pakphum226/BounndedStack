@@ -4,66 +4,80 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * BoundedStack - ADT แทนรายการลำดับรายชื่อหนังที่ผู้ใช้เลือกไว้
- * 
- * ค่านามธรรม (A) : ลำดับรายชื่อภาพยนตร์ เช่น (ภาพยนตร์A , ภาพยนตร์B , ภาพยนตร์C , .....)
- * 
+ * BoundedStack - ADT แทนรายการลำดับรายชื่อหนังและปีที่ฉายที่ผู้ใช้เลือกไว้
+ *
+ * ค่านามธรรม (A):
+ * ลำดับของภาพยนตร์และปีที่ฉาย เช่น
+ * (IronMan, 2551), (Titanic, 2540)
+ *
  * ตัวอย่างการใช้งาน:
- *     Movies m = new Movies();
- *     m.add("IronMan");
- *     m.add("Titanic");
+ *     BoundedStack m = new BoundedStack();
+ *     m.addMovie("IronMan", 2551);
+ *     m.addMovie("Titanic", 2540);
  *     System.out.println(m.size());   // 2
  */
 public class BoundedStack {
+
     public static final int MAX_MOVIES = 10;
 
-        // ===== representation =====
+    // ===== Representation =====
     private final List<String> movies;
+    private final List<Integer> years;
 
-// AF(movies) เพลย์ลิสต์ที่แสดงรายชื่อหนัง
-    // สแตกของรายชื่อภาพยนตร์
-    // โดยภาพยนตร์ตัวสุดท้ายใน movies
-    // คือภาพยนตร์บน Top ของ Stack
-    // และเป็นเรื่องที่สามารถนำออกได้ก่อน
+    // ===== Abstraction Function =====
+    // AF(movies, years) =
+    // แทนสแตกของรายชื่อภาพยนตร์และปีที่ฉาย
+    // movies.get(i) คือชื่อภาพยนตร์
+    // years.get(i) คือปีที่ฉายของภาพยนตร์เรื่องเดียวกัน
+    // สมาชิกตัวสุดท้ายคือ Top ของ Stack
 
-    // RI 
-    // 1.ต้อมีรายการภาพยนตร์อยู่จริง
-    // 2.ชื่อภาพยนตร์ต้องไม่ซ้ำกัน
-    // 3.ทุกภาพยนตร์จะต้องมีชื่อ
-    // 4.ต้องมีภาพยนตร์ น้อยกว่าเท่ากับ 10 และไม่น้อยกว่าเท่ากับ 1
-    //
-     // ===== Safety from Rep Exposure =====
-    // 1. movies เป็น private และ final
-    // 2. getMovies() คืน defensive copy
-    // 3. ไม่คืน movies โดยตรง
-    /**
-     * เขียน Representation Invariant
-     */
-      private void checkRep() {
+    // ===== Representation Invariant =====
+    // 1. movies ต้องไม่เป็น null
+    // 2. years ต้องไม่เป็น null
+    // 3. movies และ years ต้องมีจำนวนสมาชิกเท่ากัน
+    // 4. ไม่มีชื่อภาพยนตร์เป็น null
+    // 5. ไม่มีชื่อภาพยนตร์เป็นสตริงว่าง
+    // 6. ไม่มีชื่อภาพยนตร์ซ้ำกัน
+    // 7. จำนวนภาพยนตร์ต้องไม่เกิน 10 เรื่อง
 
-        assert movies != null : "รายการภาพยนตร์ต้องไม่เป็น null";
-        assert movies.size() <= MAX_MOVIES : "จำนวนภาพยนตร์ต้องไม่เกิน 10 เรื่อง";
+    // ===== Safety from Rep Exposure =====
+    // 1. movies และ years เป็น private และ final
+    // 2. คืนข้อมูลแบบ Defensive Copy
+    // 3. ไม่คืน reference ของ representation โดยตรง
+
+    private void checkRep() {
+
+        assert movies != null : "movies ต้องไม่เป็น null";
+        assert years != null : "years ต้องไม่เป็น null";
+        assert movies.size() == years.size()
+                : "movies และ years ต้องมีจำนวนเท่ากัน";
+        assert movies.size() <= MAX_MOVIES
+                : "จำนวนหนังต้องไม่เกิน 10 เรื่อง";
 
         Set<String> seen = new HashSet<>();
 
-        for (String movie : movies) {
+        for (int i = 0; i < movies.size(); i++) {
 
-            assert movie != null : "ชื่อภาพยนตร์ต้องไม่เป็น null";
-            assert !movie.isEmpty() : "ชื่อภาพยนตร์ต้องไม่เป็นค่าว่าง";
-            assert seen.add(movie) : "ห้ามมีชื่อภาพยนตร์ซ้ำกัน : " + movie;
+            String movie = movies.get(i);
+
+            assert movie != null : "ชื่อหนังต้องไม่เป็น null";
+            assert !movie.isEmpty() : "ชื่อหนังต้องไม่เป็นค่าว่าง";
+            assert seen.add(movie) : "ชื่อหนังซ้ำ : " + movie;
+
+            assert years.get(i) > 0 : "ปีที่ฉายไม่ถูกต้อง";
         }
     }
 
     // ===== Creator =====
 
     /**
-     * สร้าง Movie Stack ว่าง
+     * สร้างสแตกของหนังว่าง
      */
     public BoundedStack() {
 
-        this.movies = new ArrayList<>();
+        movies = new ArrayList<>();
+        years = new ArrayList<>();
 
         checkRep();
     }
-
 }
