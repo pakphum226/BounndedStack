@@ -15,12 +15,10 @@ import java.util.Set;
  *     BoundedStack m = new BoundedStack();
  *     m.addMovie("IronMan", 2551);
  *     m.addMovie("Titanic", 2540);
- *     System.out.println(m.size());   // 2
+ *     System.out.println(m.size()); //2
  */
 public class BoundedStack {
-
     public static final int MAX_MOVIES = 10;
-
     // ===== Representation =====
     private final List<String> movies;
     private final List<Integer> years;
@@ -67,9 +65,7 @@ public class BoundedStack {
         assert Y > 0 : "ปีที่ฉายต้องมากกว่า 0 : " + Y;
     }
     }
-
     // Creator 
-
     /**
      * สร้างสแตกของภาพยนตร์ว่าง
      */
@@ -113,7 +109,6 @@ public class BoundedStack {
     // Mutator
     //
     //เพิ่มรายการภาพยนตร์และปีต่อท้าย
-
     /**
     *
     * @param movie,year ชื่อภาพยนตร์และปีที่ฉาย ต้องไม่เป็น null และไม่เป็นช่องว่าง
@@ -135,14 +130,21 @@ public class BoundedStack {
     * @param movie,year รายการภาพยนตร์ปีที่ฉายที่ต้องการลบ
     * @return true ถ้าลบสำเร็จ , false ถ้าไม่เจอชื่อรายการภาพยนตร์
     */
-   public boolean remove(String movie , Integer year ){
-        if(!movie.contains(movie)) return false ;
-        movies.remove(movie);
-        years.remove(year);
-        checkRep();
-        return true ;
-   }
-   // Observers
+   public boolean remove(String movie, Integer year) {
+    if (!movies.contains(movie)) {
+        return false;
+    }
+    int i = movies.indexOf(movie);
+    if (!years.get(i).equals(year)) {
+        return false;
+    }
+    movies.remove(i);
+    years.remove(i);
+
+    checkRep();
+    return true;
+    }
+    // Observers
     /**
      * คืนจำนวนรายการภาพยนตร์และปีที่ฉาย
      */
@@ -178,10 +180,8 @@ public class BoundedStack {
         Collections.reverse(copyyears);
         return new BoundedStack(copymovies,copyyears);   
     }
-
    @Override
     public String toString() {
         return "Movies: " + movies.toString() + ", Years: " + years.toString();
     }
-   
 }
