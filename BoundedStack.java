@@ -19,6 +19,7 @@ import java.util.Set;
  */
 public class BoundedStack {
     public static final int MAX_MOVIES = 10;
+    
     // ===== Representation =====
     private final List<String> movies;
     private final List<Integer> years;
@@ -42,175 +43,200 @@ public class BoundedStack {
 
     // ===== Safety from Rep Exposure =====
     // ให้ movies และ years เป็น final object
-    // ก็อปปี้ข้อมูลก่ออนส่งออกไป
+    // ก็อปปี้ข้อมูลก่อนส่งออกไป
 
     private void checkRep() {
 
         assert movies != null : "ภาพยนตร์ต้องมีอยู่จริง";
         assert years != null : "ปีที่ฉายต้องมีอยู่จริง";
         assert movies.size() == years.size() : "ภาพยนตร์และปีที่ฉายต้องมีจำนวนเท่ากัน";
-        assert movies.size() <= MAX_MOVIES: "จำนวนภาพยนตร์ต้องไม่เกิน 10 เรื่อง";
+        assert movies.size() <= MAX_MOVIES : "จำนวนภาพยนตร์ต้องไม่เกิน 10 เรื่อง";
 
         Set<String> seen = new HashSet<>();
 
-       for (int i = 0; i < movies.size(); i++) {
-        String M = movies.get(i);
-        Integer Y = years.get(i);
+        for (int i = 0; i < movies.size(); i++) {
+            String M = movies.get(i);
+            Integer Y = years.get(i);
 
-        assert M != null : "ชื่อภาพยนตร์ต้องมีอยู่จริง";
-        assert !M.isEmpty() : "ภาพยนตร์ต้องมีชื่อภาพยนตร์";
-        assert seen.add(M) : "ชื่อภาพยนตร์ซ้ำ : " + M;
+            assert M != null : "ชื่อภาพยนตร์ต้องมีอยู่จริง";
+            assert !M.isEmpty() : "ภาพยนตร์ต้องมีชื่อภาพยนตร์";
+            assert seen.add(M) : "ชื่อภาพยนตร์ซ้ำ : " + M;
 
-        assert Y != null : "ปีที่ฉายต้องมีอยู่จริง";
-        assert Y > 0 : "ปีที่ฉายต้องมากกว่า 0 : " + Y;
+            assert Y != null : "ปีที่ฉายต้องมีอยู่จริง";
+            assert Y > 0 : "ปีที่ฉายต้องมากกว่า 0 : " + Y;
+        }
     }
-    }
-    // Creator 
+
+    // ===== Creator =====
     /**
      * สร้างสแตกของภาพยนตร์ว่าง
      */
     public BoundedStack() {
-
         this.movies = new ArrayList<>();
         this.years = new ArrayList<>();
         checkRep();
     }
-    // Creater 2
+
     /**
-    * สร้างสแตคของรายชื่อภาพยนตร์ที่ให้มา
-    *
-    * @param initial รายชื่อภาพยนตร์และปีที่ฉายเริ่มต้น ต้องไม่ซ้ำและไม่เกิน 10 เรื่อง
-    * @throws IllegalArgumentException ถ้า initial ผิดเงื่อนไข
-    */
-    public BoundedStack(List<String> initialmovies , List<Integer> initialyears ){
-        if (initialmovies == null || initialyears == null) throw new IllegalArgumentException("ภาพยนตร์ต้องมีอยู่จริง");
-        if (initialmovies.size() != initialyears.size()) throw new IllegalArgumentException("จำนวนภาพยนตร์และปีที่ฉายต้องเท่ากัน");
-        if (initialmovies.size()> MAX_MOVIES) throw new IllegalArgumentException("จำนวนภาพยนตร์ต้องไม่เกิน 10 เรื่อง");
+     * สร้างสแตคของรายชื่อภาพยนตร์ที่ให้มา
+     *
+     * @param initialmovies รายชื่อภาพยนตร์เริ่มต้น
+     * @param initialyears ปีที่ฉายเริ่มต้น ต้องไม่ซ้ำและไม่เกิน 10 เรื่อง
+     * @throws IllegalArgumentException ถ้า initial ผิดเงื่อนไข
+     */
+    public BoundedStack(List<String> initialmovies, List<Integer> initialyears) {
+        if (initialmovies == null || initialyears == null) {
+            throw new IllegalArgumentException("ภาพยนตร์ต้องมีอยู่จริง");
+        }
+        if (initialmovies.size() != initialyears.size()) {
+            throw new IllegalArgumentException("จำนวนภาพยนตร์และปีที่ฉายต้องเท่ากัน");
+        }
+        if (initialmovies.size() > MAX_MOVIES) {
+            throw new IllegalArgumentException("จำนวนภาพยนตร์ต้องไม่เกิน 10 เรื่อง");
+        }
+
         Set<String> seen = new HashSet<>();
         for (int i = 0; i < initialmovies.size(); i++) {
             String movie = initialmovies.get(i);
             Integer year = initialyears.get(i);
 
             if (movie == null || movie.isEmpty()) {
-                throw new IllegalArgumentException("ชื่อภาพยนตร์ต้องมีอยยู่จริงหรือภาพยนตร์ต้องมีชื่อ");
+                throw new IllegalArgumentException("ชื่อภาพยนตร์ต้องมีอยู่จริงหรือภาพยนตร์ต้องมีชื่อ");
             }
             if (!seen.add(movie)) {
                 throw new IllegalArgumentException("ชื่อภาพยนตร์ต้องห้ามซ้ำกัน: " + movie);
             }
-
             if (year == null || year <= 0) {
                 throw new IllegalArgumentException("ปีที่ฉายต้องมีอยู่จริง");
             }
         }
         this.movies = new ArrayList<>(initialmovies);
-        this.years = new ArrayList<>(initialyears) ;  
+        this.years = new ArrayList<>(initialyears);
         checkRep();
     }
-    // Mutator
-    //
-    //// เพิ่มรายการภาพยนตร์และปีที่ฉายไว้บนสุดของสแตค
+
+    // ===== Mutator =====
     /**
-    *
-    * @param movie,year ชื่อภาพยนตร์และปีที่ฉาย ต้องไม่เป็น null และไม่เป็นช่องว่าง
-    * @return true ถ้าเพิ่มสำเร็จ, false ถ้ามีภาพยนตร์นี้มีอยู่แล้วหรือเต็มแล้ว
-    * @throws IllegalArgumentException ถ้า movie,year เป็น null หรือช่องว่าง,น้อยกว่า  0
-    */
+     * เพิ่มรายการภาพยนตร์และปีที่ฉายไว้บนสุดของสแตค
+     *
+     * @param movie ชื่อภาพยนตร์
+     * @param year ปีที่ฉาย
+     * @return true ถ้าเพิ่มสำเร็จ
+     * @throws IllegalArgumentException ถ้า movie/year ผิดเงื่อนไข ชื่อซ้ำ หรือสแตคเต็ม
+     */
     public boolean push(String movie, Integer year) {
+        if (movie == null || movie.isEmpty()) {
+            throw new IllegalArgumentException("ภาพยนตร์ต้องมีอยู่จริงและต้องมีชื่อ");
+        }
+        if (year == null || year <= 0) {
+            throw new IllegalArgumentException("ปีที่ฉายต้องมีอยู่จริงหรือไม่น้อยกว่า 0 ปี");
+        }
+        if (movies.contains(movie) || movies.size() >= MAX_MOVIES) {
+            throw new IllegalArgumentException("ชื่อภาพยนตร์ต้องไม่ซ้ำหรือจำนวนภาพยนตร์เต็ม");
+        }
+        movies.add(movie);
+        years.add(year);
+        checkRep();
+        return true;
+    }
 
-    if (movie == null || movie.isEmpty()) {
-        throw new IllegalArgumentException("ภาพยนตร์ต้องมีอยู่จริงและต้องมีชื่อ");
-    }
-    if (year == null || year <= 0) {
-        throw new IllegalArgumentException("ปีที่ฉายต้องมีอยู่จริงหรือไม่น้อยกว่า 0 ปี");
-    }
-    if (movies.contains(movie) || movies.size() >= MAX_MOVIES) {
-    throw new IllegalArgumentException("ชือ่ภาพยนตร์ต้องไม่ซ้ำหรือจำนวนภาพยนตร์เต็ม");
-    }
-    movies.add(movie);
-    years.add(year);
-    checkRep();
-    return true;
-}
     /**
-    * ลบรายการภาพยนตร์และปีที่ฉายที่อยู่บนสุดของสแตก
-    *
-    * @param movie,year รายการภาพยนตร์ปีที่ฉายที่ต้องการลบ
-    * @return true ถ้าลบสำเร็จ , false ถ้าไม่เจอชื่อรายการภาพยนตร์
-    */
+     * ลบรายการภาพยนตร์และปีที่ฉายที่อยู่บนสุดของสแตก
+     *
+     * @return true ถ้าลบสำเร็จ , false ถ้าสแตกว่าง
+     */
     public boolean pop() {
-    if (movies.isEmpty()) {
-        return false;
-    }
-    int top = movies.size() - 1;
-    movies.remove(top);
-    years.remove(top); 
-    checkRep();
-    return true;
+        if (movies.isEmpty()) {
+            return false;
+        }
+        int top = movies.size() - 1;
+        movies.remove(top);
+        years.remove(top);
+        checkRep();
+        return true;
     }
 
-    // Observers
+    // ===== Observers =====
     /**
-    * คืนค่าชื่อภาพยนตร์ที่อยู่บนสุดของสแตก
-    * โดยที่ไม่ลบข้อมูลออกจากสแตก
-    *
-    * @return ชื่อภาพยนตร์ที่อยู่บนสุดของสแตก
-    *         หรือ null ถ้าสแตกว่าง
-    */
+     * คืนค่าชื่อภาพยนตร์ที่อยู่บนสุดของสแตก โดยที่ไม่ลบข้อมูลออกจากสแตก
+     *
+     * @return ชื่อภาพยนตร์ที่อยู่บนสุดของสแตก หรือ null ถ้าสแตกว่าง
+     */
     public String peekMovie() {
-    if (movies.isEmpty()) {
-        return null;
+        if (movies.isEmpty()) {
+            return null;
+        }
+        return movies.get(movies.size() - 1);
     }
-    return movies.get(movies.size() - 1);
-    }
+
     /**
-    * คืนค่าปีที่ฉายที่อยู่บนสุดของสแตก
-    * โดยที่ไม่ลบข้อมูลออกจากสแตก
-    *
-    * @return ปีที่ฉายที่อยู่บนสุดของสแตก
-    *         หรือ null ถ้าสแตกว่าง
-    */
+     * คืนค่าปีที่ฉายที่อยู่บนสุดของสแตก โดยที่ไม่ลบข้อมูลออกจากสแตก
+     *
+     * @return ปีที่ฉายที่อยู่บนสุดของสแตก หรือ null ถ้าสแตกว่าง
+     */
     public Integer peekYear() {
-    if (years.isEmpty()) {
-        return null;
+        if (years.isEmpty()) {
+            return null;
+        }
+        return years.get(years.size() - 1);
     }
-    return years.get(years.size() - 1);
-    }
+
     /**
-    * ตรวจสอบว่าสแตกว่างหรือไม่
-    *
-    * @return true ถ้าสแตกไม่มีภาพยนตร์อยู่
-    *         false ถ้าสแตกมีภาพยนตร์อย่างน้อย 1 ภาพยนตร์
-    */
+     * ตรวจสอบว่าสแตกว่างหรือไม่
+     *
+     * @return true ถ้าสแตกไม่มีภาพยนตร์อยู่ false ถ้าสแตกมีภาพยนตร์อย่างน้อย 1 เรื่อง
+     */
     public boolean isEmpty() {
         return movies.isEmpty();
     }
+
     /**
      * คืนจำนวนรายการภาพยนตร์และปีที่ฉาย
      */
     public int size() {
-        return movies.size() ;    
+        return movies.size();
     }
+
     /**
      * ตรวจเช็คว่ามีภาพยนตร์นี้อยู่หรือไม่
      */
     public boolean contains(String movie) {
-        return movies.contains(movie);   
+        return movies.contains(movie);
     }
-    // Producer 
 
+    /**
+     * คืนค่ารายการชื่อภาพยนตร์ทั้งหมดแบบป้องกันการแก้ไข (Defensive Copy)
+     *
+     * @return รายชื่อภาพยนตร์ในสแตค
+     */
+    public List<String> movies() {
+        return new ArrayList<>(movies);
+    }
+
+    /**
+     * คืนค่ารายการปีที่ฉายทั้งหมดแบบป้องกันการแก้ไข (Defensive Copy)
+     *
+     * @return รายการปีที่ฉายในสแตค
+     */
+    public List<Integer> years() {
+        return new ArrayList<>(years);
+    }
+
+    // ===== Producer =====
     /**
      * คืนสแตคใหม่ที่มีภาพยนตร์และปีที่ฉายเดียวกันแต่สลับลำดับ
      *
-     * @return เพลย์ลิสต์ใหม่ที่สลับลำดับแล้ว
+     * @return สแตคใหม่ที่สลับลำดับแล้ว
      */
     public BoundedStack reversed() {
         List<String> copymovies = new ArrayList<>(movies);
         List<Integer> copyyears = new ArrayList<>(years);
         Collections.reverse(copymovies);
         Collections.reverse(copyyears);
-        return new BoundedStack(copymovies,copyyears);   
+        return new BoundedStack(copymovies, copyyears);
     }
-   @Override
+
+    @Override
     public String toString() {
         return "Movies: " + movies.toString() + ", Years: " + years.toString();
     }
