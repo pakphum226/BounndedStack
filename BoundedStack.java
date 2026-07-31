@@ -130,20 +130,17 @@ public class BoundedStack {
     * @param movie,year รายการภาพยนตร์ปีที่ฉายที่ต้องการลบ
     * @return true ถ้าลบสำเร็จ , false ถ้าไม่เจอชื่อรายการภาพยนตร์
     */
-   public boolean remove(String movie, Integer year) {
-    if (!movies.contains(movie)) {
-        return false;
+    public boolean remove(String movie, Integer year) {
+    for (int i = 0; i < movies.size(); i++) {
+        if (movies.get(i).equals(movie) && years.get(i).equals(year)) {
+            movies.remove(i);
+            years.remove(i);
+            checkRep();
+            return true;
+        }
     }
-    int i = movies.indexOf(movie);
-    if (!years.get(i).equals(year)) {
-        return false;
-    }
-    movies.remove(i);
-    years.remove(i);
-
-    checkRep();
-    return true;
-    }
+    return false ;
+   }
     // Observers
     /**
      * คืนจำนวนรายการภาพยนตร์และปีที่ฉาย
