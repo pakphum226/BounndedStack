@@ -13,8 +13,8 @@ import java.util.Set;
  *
  * ตัวอย่างการใช้งาน:
  *     BoundedStack m = new BoundedStack();
- *     m.addMovie("IronMan", 2551);
- *     m.addMovie("Titanic", 2540);
+ *     m.push("IronMan", 2551);
+ *     m.push("Titanic", 2540);
  *     System.out.println(m.size()); //2
  */
 public class BoundedStack {
@@ -108,46 +108,87 @@ public class BoundedStack {
     }
     // Mutator
     //
-    //เพิ่มรายการภาพยนตร์และปีต่อท้าย
+    //// เพิ่มรายการภาพยนตร์และปีที่ฉายไว้บนสุดของสแตค
     /**
     *
     * @param movie,year ชื่อภาพยนตร์และปีที่ฉาย ต้องไม่เป็น null และไม่เป็นช่องว่าง
     * @return true ถ้าเพิ่มสำเร็จ, false ถ้ามีภาพยนตร์นี้มีอยู่แล้วหรือเต็มแล้ว
     * @throws IllegalArgumentException ถ้า movie,year เป็น null หรือช่องว่าง,น้อยกว่า  0
     */
-    public boolean add(String movie , Integer year ) {
-        if(movie == null || movie.isEmpty()) throw new IllegalArgumentException("ภาพยนตร์ต้องมีอยู่จริง");
-        if(year == null || year <= 0) throw new IllegalArgumentException("ปีที่ฉายต้องมีอยู่จริงหรือต้องมากกว่า 0");
-        if(movies.contains(movie) || movies.size() >= MAX_MOVIES) return false ;
-        movies.add(movie);
-        years.add(year);
-        checkRep();
-        return true;   
+    public boolean push(String movie, Integer year) {
+
+    if (movie == null || movie.isEmpty()) {
+        throw new IllegalArgumentException("ภาพยนตร์ต้องมีอยู่จริงและต้องมีชื่อ");
     }
+    if (year == null || year <= 0) {
+        throw new IllegalArgumentException("ปีที่ฉายต้องมีอยู่จริงหรือไม่น้อยกว่า 0 ปี");
+    }
+    if (movies.contains(movie) || movies.size() >= MAX_MOVIES) {
+    throw new IllegalArgumentException("ชือ่ภาพยนตร์ต้องไม่ซ้ำหรือจำนวนภาพยนตร์เต็ม");
+    }
+    movies.add(movie);
+    years.add(year);
+    checkRep();
+    return true;
+}
     /**
-    * ลบรายการภาพยนตร์ออก
+    * ลบรายการภาพยนตร์และปีที่ฉายที่อยู่บนสุดของสแตก
     *
     * @param movie,year รายการภาพยนตร์ปีที่ฉายที่ต้องการลบ
     * @return true ถ้าลบสำเร็จ , false ถ้าไม่เจอชื่อรายการภาพยนตร์
     */
-    public boolean remove(String movie, Integer year) {
-    for (int i = 0; i < movies.size(); i++) {
-        if (movies.get(i).equals(movie) && years.get(i).equals(year)) {
-            movies.remove(i);
-            years.remove(i);
-            checkRep();
-            return true;
-        }
+    public boolean pop() {
+    if (movies.isEmpty()) {
+        return false;
     }
-    return false ;
-   }
+    int top = movies.size() - 1;
+    movies.remove(top);
+    years.remove(top); 
+    checkRep();
+    return true;
+    }
+
     // Observers
+    /**
+    * คืนค่าชื่อภาพยนตร์ที่อยู่บนสุดของสแตก
+    * โดยที่ไม่ลบข้อมูลออกจากสแตก
+    *
+    * @return ชื่อภาพยนตร์ที่อยู่บนสุดของสแตก
+    *         หรือ null ถ้าสแตกว่าง
+    */
+    public String peekMovie() {
+    if (movies.isEmpty()) {
+        return null;
+    }
+    return movies.get(movies.size() - 1);
+    }
+    /**
+    * คืนค่าปีที่ฉายที่อยู่บนสุดของสแตก
+    * โดยที่ไม่ลบข้อมูลออกจากสแตก
+    *
+    * @return ปีที่ฉายที่อยู่บนสุดของสแตก
+    *         หรือ null ถ้าสแตกว่าง
+    */
+    public Integer peekYear() {
+    if (years.isEmpty()) {
+        return null;
+    }
+    return years.get(years.size() - 1);
+    }
+    /**
+    * ตรวจสอบว่าสแตกว่างหรือไม่
+    *
+    * @return true ถ้าสแตกไม่มีภาพยนตร์อยู่
+    *         false ถ้าสแตกมีภาพยนตร์อย่างน้อย 1 ภาพยนตร์
+    */
+    public boolean isEmpty() {
+        return movies.isEmpty();
+    }
     /**
      * คืนจำนวนรายการภาพยนตร์และปีที่ฉาย
      */
     public int size() {
-        return movies.size() ;   
-        
+        return movies.size() ;    
     }
     /**
      * ตรวจเช็คว่ามีภาพยนตร์นี้อยู่หรือไม่
@@ -155,16 +196,8 @@ public class BoundedStack {
     public boolean contains(String movie) {
         return movies.contains(movie);   
     }
-    /**
-     * คืนรายชื่อภาพยนตร์และปีทั้งหมดตามลำดับทั้งหมดตามลำดับ
-     */
-    public List<String> movies() {
-        return new ArrayList<>(movies) ;
-    }
-    public List<Integer> years(){
-        return new ArrayList<>(years);
-    }
     // Producer 
+
     /**
      * คืนสแตคใหม่ที่มีภาพยนตร์และปีที่ฉายเดียวกันแต่สลับลำดับ
      *
